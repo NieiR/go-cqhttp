@@ -441,7 +441,11 @@ func (bot *CQBot) ToElement(t string, d map[string]string, group bool) (m messag
 		f := d["file"]
 		data, err := global.FindFile(f, d["cache"], global.VOICE_PATH)
 		if err != nil {
-			return nil, err
+			data, err := ioutil.ReadFile(f)
+			if err != nil {
+				return nil, err
+			}
+			return &message.VoiceElement{Data: data}, nil
 		}
 		if !global.IsAMRorSILK(data) {
 			data, err = global.Encoder(data)
